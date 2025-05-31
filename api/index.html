@@ -1,0 +1,1200 @@
+// ============================================
+// フロントエンド (public/index.html)
+// ============================================
+
+const frontendHTML = `<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社会科レポート診断システム</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            min-height: 100vh;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .form-section {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .info-box h3 {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+        
+        .info-box p {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 300px;
+            font-family: inherit;
+        }
+        
+        .optional-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .analyze-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            font-weight: bold;
+        }
+        
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #666;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .loading-icon {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e3e3e3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .results-section {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #28a745;
+        }
+        
+        .level-display {
+            background: linear-gradient(135deg, #fd7e14 0%, #e07c24 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .level-display h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .level-display p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .score-card {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .score-card h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .score-card .score {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .feedback-content {
+            line-height: 1.8;
+        }
+        
+        .feedback-content h3 {
+            color: #667eea;
+            margin: 25px 0 15px 0;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 8px;
+            font-size: 22px;
+        }
+        
+        .feedback-content h4 {
+            color: #495057;
+            margin: 20px 0 10px 0;
+            font-size: 18px;
+        }
+        
+        .feedback-content h5 {
+            color: #6c757d;
+            margin: 15px 0 8px 0;
+            font-size: 16px;
+        }
+        
+        .feedback-content ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .feedback-content li {
+            margin: 8px 0;
+            padding-left: 5px;
+        }
+        
+        .next-steps {
+            background: linear-gradient(135deg, #6f42c1 0%, #563d7c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+        
+        .next-steps h3 {
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .improvement-path {
+            background-color: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 AI自動レベル判定</h1>
+            <h1>社会科レポート診断システム</h1>
+            <p>あなたの実力を客観的に判定し、次のレベルへの道筋を提案します</p>
+        </div>
+        
+        <div class="form-section">
+            <div class="info-box">
+                <h3>🚀 このシステムの特徴</h3>
+                <p>• AIがレポート内容を分析し、小学校〜高校レベルでの実力を自動判定</p>
+                <p>• 学習指導要領に基づいた客観的な評価とフィードバック</p>
+                <p>• 現在のレベルから次のステップへの具体的な改善提案</p>
+                <p>• 学年に関係なく、実際の能力に応じたアドバイスを提供</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="title">📝 レポートのタイトル</label>
+                <input type="text" id="title" placeholder="例：戦国時代の武将の生活について">
+            </div>
+            
+            <div class="form-group">
+                <label for="content">📄 レポートの内容</label>
+                <textarea id="content" placeholder="レポートの全文をここに入力してください。
+
+【記入のコツ】
+・序論（テーマ・目的）、本論（調査内容・考察）、結論（まとめ・感想）を意識して書くとより良い評価になります
+・参考にした資料があれば記載してください
+・自分なりの考察や意見があると高評価につながります
+
+どんなレベルでも構いません。AIが適切に判定します！"></textarea>
+            </div>
+            
+            <div class="optional-info">
+                <div class="form-group">
+                    <label for="student-grade">👤 実際の学年（参考用・任意）</label>
+                    <select id="student-grade">
+                        <option value="">選択しない</option>
+                        <option value="小学3年">小学3年生</option>
+                        <option value="小学4年">小学4年生</option>
+                        <option value="小学5年">小学5年生</option>
+                        <option value="小学6年">小学6年生</option>
+                        <option value="中学1年">中学1年生</option>
+                        <option value="中学2年">中学2年生</option>
+                        <option value="中学3年">中学3年生</option>
+                        <option value="高校1年">高校1年生</option>
+                        <option value="高校2年">高校2年生</option>
+                        <option value="高校3年">高校3年生</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="report-topic">🎯 レポートのテーマ分野（参考用・任意）</label>
+                    <select id="report-topic">
+                        <option value="">選択しない</option>
+                        <option value="地理・地域学習">地理・地域学習</option>
+                        <option value="日本の歴史">日本の歴史</option>
+                        <option value="世界の歴史">世界の歴史</option>
+                        <option value="政治・法律">政治・法律</option>
+                        <option value="経済・産業">経済・産業</option>
+                        <option value="国際関係">国際関係</option>
+                        <option value="文化・社会">文化・社会</option>
+                        <option value="環境・資源">環境・資源</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button class="analyze-btn" id="analyzeBtn">🔍 AI診断を開始する</button>
+        </div>
+        
+        <div id="loading" class="loading" style="display:none;">
+            <div class="loading-icon"></div>
+            <p>AIが学習指導要領の基準に照らして詳細分析中...</p>
+            <p>レベル判定・改善提案を作成しています</p>
+        </div>
+        
+        <div id="error" class="error-message" style="display:none;"></div>
+        
+        <div id="results" class="results-section" style="display:none;">
+            <div class="level-display">
+                <h3 id="level-result">🎯 判定レベル: 〇年生相当</h3>
+                <p>学習指導要領に基づく客観的な実力判定</p>
+            </div>
+            
+            <div class="score-grid">
+                <div class="score-card">
+                    <h4>知識・技能</h4>
+                    <div class="score" id="knowledge-score">-/100</div>
+                </div>
+                <div class="score-card">
+                    <h4>思考・判断・表現</h4>
+                    <div class="score" id="thinking-score">-/100</div>
+                </div>
+                <div class="score-card">
+                    <h4>学習への取り組み</h4>
+                    <div class="score" id="attitude-score">-/100</div>
+                </div>
+                <div class="score-card">
+                    <h4>総合評価</h4>
+                    <div class="score" id="total-score">-/100</div>
+                </div>
+            </div>
+            
+            <div id="feedback" class="feedback-content"></div>
+            
+            <div class="next-steps">
+                <h3>🚀 次のレベルへのステップアップ</h3>
+                <div id="improvement-path" class="improvement-path"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM要素
+        const titleInput = document.getElementById('title');
+        const contentInput = document.getElementById('content');
+        const studentGrade = document.getElementById('student-grade');
+        const reportTopic = document.getElementById('report-topic');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const loadingDiv = document.getElementById('loading');
+        const errorDiv = document.getElementById('error');
+        const resultsDiv = document.getElementById('results');
+        const feedbackDiv = document.getElementById('feedback');
+        const levelResult = document.getElementById('level-result');
+        const improvementPath = document.getElementById('improvement-path');
+
+        // 診断実行
+        analyzeBtn.addEventListener('click', async () => {
+            if (!validateInputs()) return;
+            
+            showLoading(true);
+            hideError();
+            hideResults();
+            
+            try {
+                const analysis = await analyzeReportSecure();
+                displayResults(analysis);
+            } catch (error) {
+                console.error('エラー:', error);
+                showError('診断中にエラーが発生しました。しばらく時間をおいて再度お試しください。');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        // 入力検証
+        function validateInputs() {
+            if (!titleInput.value.trim()) {
+                showError('レポートタイトルを入力してください');
+                return false;
+            }
+            if (!contentInput.value.trim()) {
+                showError('レポート内容を入力してください');
+                return false;
+            }
+            if (contentInput.value.trim().length < 100) {
+                showError('レポート内容が短すぎます。より詳細な内容を入力してください（最低100文字）');
+                return false;
+            }
+            return true;
+        }
+
+        // セキュアなAPI呼び出し（バックエンド経由）
+        async function analyzeReportSecure() {
+            const requestData = {
+                title: titleInput.value.trim(),
+                content: contentInput.value.trim(),
+                studentGrade: studentGrade.value || null,
+                reportTopic: reportTopic.value || null,
+                timestamp: Date.now()
+            };
+
+            const response = await fetch('/api/analyze.js', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // CSRFトークンも本番では追加
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || 'サーバーエラーが発生しました');
+            }
+
+            const data = await response.json();
+            return data.analysis;
+        }
+
+        // 結果表示
+        function displayResults(analysis) {
+            // レベル判定結果の抽出
+            const levelMatch = analysis.match(/判定結果[：:]\s*([^*\\n]+)/);
+            if (levelMatch) {
+                levelResult.textContent = \`🎯 \${levelMatch[1].trim()}\`;
+            }
+
+            // スコア抽出と表示
+            extractAndDisplayScores(analysis);
+
+            // ステップアップ情報の抽出
+            extractImprovementPath(analysis);
+
+            // フィードバック整形・表示
+            feedbackDiv.innerHTML = formatFeedback(analysis);
+            resultsDiv.style.display = 'block';
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // スコア抽出・表示
+        function extractAndDisplayScores(analysis) {
+            const knowledgeMatch = analysis.match(/知識・技能[：:]\s*(\\d+)\\/100点/);
+            const thinkingMatch = analysis.match(/思考・判断・表現[：:]\s*(\\d+)\\/100点/);
+            const attitudeMatch = analysis.match(/主体的な学習態度[：:]\s*(\\d+)\\/100点/);
+            const totalMatch = analysis.match(/総合評価[：:]\s*(\\d+)\\/100点/);
+
+            if (knowledgeMatch) document.getElementById('knowledge-score').textContent = \`\${knowledgeMatch[1]}/100\`;
+            if (thinkingMatch) document.getElementById('thinking-score').textContent = \`\${thinkingMatch[1]}/100\`;
+            if (attitudeMatch) document.getElementById('attitude-score').textContent = \`\${attitudeMatch[1]}/100\`;
+            if (totalMatch) document.getElementById('total-score').textContent = \`\${totalMatch[1]}/100\`;
+        }
+
+        // ステップアップ情報の抽出
+        function extractImprovementPath(analysis) {
+            const stepupSection = analysis.match(/## 🚀 次のレベルへのステップアップ方法([\\s\\S]*?)(?=##|$)/);
+            if (stepupSection) {
+                improvementPath.innerHTML = formatFeedback(stepupSection[1]);
+            }
+        }
+
+        // フィードバック整形
+        function formatFeedback(feedback) {
+            return feedback
+                .replace(/## (.*)/g, '<h3>$1</h3>')
+                .replace(/### (.*)/g, '<h4>$1</h4>')
+                .replace(/#### (.*)/g, '<h5>$1</h5>')
+                .replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')
+                .replace(/^(\\d+)\\.\\s/gm, '<li>')
+                .replace(/^-\\s/gm, '<li>')
+                .replace(/<li>/g, '<li style="margin: 8px 0;">')
+                .replace(/\\n\\n/g, '<br><br>')
+                .replace(/\\n/g, '<br>');
+        }
+
+        // UI制御関数
+        function showLoading(show) {
+            loadingDiv.style.display = show ? 'block' : 'none';
+            analyzeBtn.disabled = show;
+        }
+
+        function showError(message) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            errorDiv.style.display = 'none';
+        }
+
+        function hideResults() {
+            resultsDiv.style.display = 'none';
+        }
+    </script>
+</body>
+</html>`;
+
+// ============================================
+// バックエンドサーバー (server.js)
+// ============================================
+
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const path = require('path');
+require('dotenv').config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// セキュリティミドルウェア
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            scriptSrc: ["'self'"],
+            imgSrc: ["'self'", "data:", "https:"],
+        },
+    },
+}));
+
+// CORS設定
+app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true
+}));
+
+// レート制限
+const analyzeLimit = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15分
+    max: 10, // 最大10回のリクエスト
+    message: {
+        error: 'リクエストが多すぎます。15分後に再度お試しください。'
+    }
+});
+
+app.use('/api/analyze', analyzeLimit);
+app.use(express.json({ limit: '10mb' }));
+app.use(express.static('public'));
+
+// Gemini API設定
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+
+// 入力検証関数
+function validateAnalysisRequest(data) {
+    const errors = [];
+    
+    if (!data.title || typeof data.title !== 'string' || data.title.trim().length === 0) {
+        errors.push('タイトルが必要です');
+    }
+    
+    if (!data.content || typeof data.content !== 'string' || data.content.trim().length < 100) {
+        errors.push('レポート内容は100文字以上で入力してください');
+    }
+    
+    if (data.title && data.title.length > 200) {
+        errors.push('タイトルは200文字以内で入力してください');
+    }
+    
+    if (data.content && data.content.length > 10000) {
+        errors.push('レポート内容は10000文字以内で入力してください');
+    }
+    
+    return errors;
+}
+
+// サニタイゼーション関数
+function sanitizeInput(input) {
+    if (typeof input !== 'string') return '';
+    return input
+        .replace(/[<>\"'&]/g, '') // 基本的なHTML/スクリプトインジェクション対策
+        .trim()
+        .slice(0, 10000); // 最大長制限
+}
+
+// メインAPI エンドポイント
+app.post('/api/analyze', async (req, res) => {
+    try {
+        // 入力検証
+        const validationErrors = validateAnalysisRequest(req.body);
+        if (validationErrors.length > 0) {
+            return res.status(400).json({
+                error: 'バリデーションエラー',
+                details: validationErrors
+            });
+        }
+
+        // APIキーチェック
+        if (!GEMINI_API_KEY) {
+            return res.status(500).json({
+                error: 'サーバー設定エラー',
+                message: 'AI分析サービスが利用できません'
+            });
+        }
+
+        // 入力データのサニタイゼーション
+        const sanitizedData = {
+            title: sanitizeInput(req.body.title),
+            content: sanitizeInput(req.body.content),
+            studentGrade: req.body.studentGrade || '不明',
+            reportTopic: req.body.reportTopic || '不明'
+        };
+
+        // AIプロンプトの構築
+        const prompt = buildAnalysisPrompt(sanitizedData);
+
+        // Gemini API呼び出し
+        const response = await fetch(\`\${GEMINI_API_URL}?key=\${GEMINI_API_KEY}\`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: prompt
+                    }]
+                }]
+            })
+        });
+
+        if (!response.ok) {
+            console.error('Gemini API error:', response.status, await response.text());
+            return res.status(500).json({
+                error: 'AI分析エラー',
+                message: 'AI分析サービスでエラーが発生しました'
+            });
+        }
+
+        const data = await response.json();
+        const analysis = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (!analysis) {
+            return res.status(500).json({
+                error: '分析結果エラー',
+                message: '分析結果を取得できませんでした'
+            });
+        }
+
+        // レスポンス返却
+        res.json({
+            success: true,
+            analysis: analysis,
+            timestamp: new Date().toISOString()
+        });
+
+    } catch (error) {
+        console.error('Analysis error:', error);
+        res.status(500).json({
+            error: 'サーバーエラー',
+            message: 'システムエラーが発生しました'
+        });
+    }
+});
+
+// プロンプト構築関数
+function buildAnalysisPrompt(data) {
+    return \`
+あなたは社会科教育の専門家として、文部科学省の学習指導要領に基づいてレポートを分析し、学習者の実力レベルを判定してください。
+
+【分析対象レポート】
+タイトル: \${data.title}
+内容: \${data.content}
+
+【参考情報】
+実際の学年: \${data.studentGrade}
+テーマ分野: \${data.reportTopic}
+
+【分析指示】
+1. レベル判定基準：
+   小学校3-4年レベル：基本的な事実の記述、身近な地域への関心
+   小学校5-6年レベル：歴史的事象の理解、日本の国土・産業への理解、簡単な比較・関係づけ
+   中学校1年レベル：地理的分野の基礎、世界と日本の地域的特色の理解
+   中学校2年レベル：歴史的分野の理解、時代の特色と変化の把握
+   中学校3年レベル：公民的分野の理解、現代社会の課題への関心、多角的思考
+   高校1年レベル：地理総合・歴史総合の理解、グローバルな視点
+   高校2-3年レベル：探究的学習、高度な考察力、論理的構成
+
+2. 評価観点（各100点満点）：
+   - 知識・技能：基礎知識、資料活用、情報収集
+   - 思考・判断・表現：論理構成、考察力、表現力
+   - 主体的な学習態度：関心・意欲、課題設定、探究心
+
+【回答形式】
+## 🎯 実力レベル判定
+**判定結果: 〇〇年生相当レベル**
+（実際の学年との比較があれば簡潔にコメント）
+
+## 📊 詳細評価
+- 知識・技能: XX/100点
+- 思考・判断・表現: XX/100点  
+- 主体的な学習態度: XX/100点
+- **総合評価: XX/100点**
+
+## ✨ 優秀な点
+[具体的な良い点を3-4点、該当学年レベルの基準から]
+
+## 📈 改善できる点
+
+### 知識・技能面
+[具体的な改善点と修正提案]
+
+### 思考・判断・表現面
+[具体的な改善点と修正提案]
+
+### 学習態度面
+[具体的な改善点と修正提案]
+
+## 🚀 次のレベルへのステップアップ方法
+
+### 短期目標（今すぐできること）
+1. [具体的な改善アクション]
+2. [具体的な改善アクション]  
+3. [具体的な改善アクション]
+
+### 中期目標（次の段階を目指すために）
+1. [発展的な学習提案]
+2. [発展的な学習提案]
+3. [発展的な学習提案]
+
+### 推奨学習リソース
+[年齢・レベルに適した学習方法・教材の提案]
+
+※判定は内容の質・深さ・表現力を総合的に評価し、学年に関係なく客観的に行ってください。
+※具体的で実践可能なアドバイスを心がけてください。
+\`;
+}
+
+// ヘルスチェックエンドポイント
+app.get('/api/health', (req, res) => {
+    res.json({ 
+        status: 'OK', 
+        timestamp: new Date().toISOString(),
+        service: 'Social Studies Report Analyzer'
+    });
+});
+
+// 静的ファイル配信
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// サーバー起動
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Frontend: http://localhost:${PORT}`);
+    console.log(`API Health: http://localhost:${PORT}/api/health`);
+});
+
+// ============================================
+// 環境設定ファイル (.env)
+// ============================================
+
+const envExample = `
+# Gemini API設定
+GEMINI_API_KEY=your_actual_gemini_api_key_here
+
+# サーバー設定
+PORT=3000
+NODE_ENV=production
+
+# フロントエンド URL（本番環境では実際のドメインを設定）
+FRONTEND_URL=https://yourdomain.com
+
+# セキュリティ設定
+SESSION_SECRET=your_super_secure_session_secret_here
+`;
+
+// ============================================
+// package.json
+// ============================================
+
+const packageJson = {
+    "name": "social-studies-analyzer",
+    "version": "1.0.0",
+    "description": "AI-powered social studies report analyzer with automatic level assessment",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "nodemon server.js",
+        "test": "jest",
+        "build": "npm install --production"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "cors": "^2.8.5",
+        "helmet": "^7.0.0",
+        "express-rate-limit": "^6.8.1",
+        "dotenv": "^16.3.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.1",
+        "jest": "^29.6.2"
+    },
+    "engines": {
+        "node": ">=16.0.0"
+    }
+};
+
+// ============================================
+// Docker設定 (Dockerfile)
+// ============================================
+
+const dockerfile = `
+FROM node:18-alpine
+
+WORKDIR /app
+
+# セキュリティ: 非rootユーザーの作成
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
+
+# パッケージファイルのコピー
+COPY package*.json ./
+
+# 依存関係のインストール
+RUN npm ci --only=production && npm cache clean --force
+
+# アプリケーションファイルのコピー
+COPY . .
+
+# ユーザー権限の変更
+RUN chown -R nextjs:nodejs /app
+USER nextjs
+
+# ポート公開
+EXPOSE 3000
+
+# ヘルスチェック
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \\
+    CMD curl -f http://localhost:3000/api/health || exit 1
+
+# アプリケーション起動
+CMD ["npm", "start"]
+`;
+
+// ============================================
+// デプロイ用設定 (docker-compose.yml)
+// ============================================
+
+const dockerCompose = `
+version: '3.8'
+
+services:
+  social-studies-analyzer:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - GEMINI_API_KEY=\${GEMINI_API_KEY}
+      - FRONTEND_URL=\${FRONTEND_URL}
+    restart: unless-stopped
+    
+    # リソース制限
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+    
+    # ヘルスチェック
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # リバースプロキシ（本番環境用）
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - social-studies-analyzer
+    restart: unless-stopped
+`;
+
+// ============================================
+// Nginx設定 (nginx.conf)
+// ============================================
+
+const nginxConfig = `
+events {
+    worker_connections 1024;
+}
+
+http {
+    upstream app {
+        server social-studies-analyzer:3000;
+    }
+
+    # セキュリティヘッダー
+    add_header X-Frame-Options DENY;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
+
+    # レート制限
+    limit_req_zone $binary_remote_addr zone=api:10m rate=10r/m;
+
+    server {
+        listen 80;
+        server_name yourdomain.com;
+        
+        # HTTPS リダイレクト
+        return 301 https://$server_name$request_uri;
+    }
+
+    server {
+        listen 443 ssl http2;
+        server_name yourdomain.com;
+
+        # SSL設定
+        ssl_certificate /etc/nginx/ssl/cert.pem;
+        ssl_certificate_key /etc/nginx/ssl/key.pem;
+        ssl_protocols TLSv1.2 TLSv1.3;
+
+        # 静的ファイル
+        location / {
+            proxy_pass http://app;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # API レート制限
+        location /api/ {
+            limit_req zone=api burst=5 nodelay;
+            proxy_pass http://app;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+}
+`;
+
+// ============================================
+// 簡単デプロイ用スクリプト (deploy.sh)
+// ============================================
+
+const deployScript = `#!/bin/bash
+
+# 簡単デプロイスクリプト
+echo "🚀 社会科レポート診断システムのデプロイを開始します..."
+
+# 必要な環境変数をチェック
+if [ -z "$GEMINI_API_KEY" ]; then
+    echo "❌ エラー: GEMINI_API_KEY が設定されていません"
+    echo "以下のコマンドで設定してください:"
+    echo "export GEMINI_API_KEY='your_api_key_here'"
+    exit 1
+fi
+
+# Dockerでビルド・起動
+echo "📦 Dockerコンテナをビルドしています..."
+docker-compose down
+docker-compose build --no-cache
+docker-compose up -d
+
+echo "⏳ サービスの起動を待機中..."
+sleep 10
+
+# ヘルスチェック
+if curl -f http://localhost:3000/api/health > /dev/null 2>&1; then
+    echo "✅ デプロイ完了！"
+    echo "🌐 アプリケーション: http://localhost:3000"
+    echo "🔍 ヘルスチェック: http://localhost:3000/api/health"
+else
+    echo "❌ デプロイ失敗: ヘルスチェックに失敗しました"
+    echo "ログを確認してください: docker-compose logs"
+    exit 1
+fi
+`;
+
+// ============================================
+// セットアップ用 README.md
+// ============================================
+
+const readme = `
+# 社会科レポート診断システム - 実運用版
+
+AI自動レベル判定機能付きの社会科レポート診断システムです。
+
+## 🚀 クイックスタート
+
+### 1. 必要な準備
+\`\`\`bash
+# リポジトリをクローン
+git clone <repository-url>
+cd social-studies-analyzer
+
+# 依存関係をインストール
+npm install
+\`\`\`
+
+### 2. 環境設定
+\`\`\`bash
+# .envファイルを作成
+cp .env.example .env
+
+# .envファイルを編集してAPIキーを設定
+nano .env
+\`\`\`
+
+### 3. 開発環境で起動
+\`\`\`bash
+npm run dev
+\`\`\`
+
+### 4. 本番環境でのデプロイ
+\`\`\`bash
+# 環境変数を設定
+export GEMINI_API_KEY='your_api_key_here'
+export FRONTEND_URL='https://yourdomain.com'
+
+# Dockerで起動
+chmod +x deploy.sh
+./deploy.sh
+\`\`\`
+
+## 📁 ファイル構成
+
+\`\`\`
+project/
+├── server.js              # メインサーバー
+├── public/
+│   └── index.html         # フロントエンド
+├── .env                   # 環境変数（要作成）
+├── package.json           # 依存関係
+├── Dockerfile            # Docker設定
+├── docker-compose.yml    # Docker Compose設定
+├── nginx.conf            # Nginx設定
+└── deploy.sh             # デプロイスクリプト
+\`\`\`
+
+## 🔒 セキュリティ機能
+
+- ✅ APIキーの完全隠蔽
+- ✅ レート制限（15分間に10回まで）
+- ✅ 入力検証・サニタイゼーション
+- ✅ CSPヘッダー設定
+- ✅ HTTPS対応
+- ✅ XSSプロテクション
+
+## 🌐 本番環境の要件
+
+- Node.js 16以上
+- Docker & Docker Compose（推奨）
+- SSL証明書（HTTPS用）
+- Gemini API キー
+
+## 🔧 カスタマイズ
+
+### レート制限の調整
+\`server.js\` の \`analyzeLimit\` 設定を変更
+
+### プロンプトの調整
+\`buildAnalysisPrompt\` 関数内でAI分析の指示を変更
+
+### セキュリティ設定
+\`helmet\` と \`cors\` の設定で調整
+
+## 📊 監視・ログ
+
+### ヘルスチェック
+\`\`\`bash
+curl http://localhost:3000/api/health
+\`\`\`
+
+### ログ確認
+\`\`\`bash
+# Docker環境
+docker-compose logs -f
+
+# 直接実行
+npm start
+\`\`\`
+
+## 🚨 トラブルシューティング
+
+### よくある問題
+
+1. **APIキーエラー**
+   - \`.env\`ファイルにGEMINI_API_KEYが正しく設定されているか確認
+
+2. **レート制限エラー**
+   - 15分間に10回を超えるリクエストを送信していないか確認
+
+3. **CORS エラー**
+   - FRONTEND_URLが正しく設定されているか確認
+
+### ログの確認方法
+\`\`\`bash
+# エラーログの確認
+docker-compose logs social-studies-analyzer
+
+# リアルタイムログの監視
+docker-compose logs -f
+\`\`\`
+
+## 📈 スケーリング
+
+### 水平スケーリング
+\`docker-compose.yml\`でreplicas設定を追加
+
+### データベース連携
+ユーザー管理・履歴保存が必要な場合はPostgreSQL等を追加
+
+### キャッシュ
+頻繁なリクエストがある場合はRedisでキャッシュを実装
+
+## 📝 ライセンス
+
+MIT License
+\`
+`;
+
+console.log('✅ セキュア版の社会科レポート診断システムが完成しました！');
+console.log('');
+console.log('📁 必要なファイル:');
+console.log('- server.js (メインサーバー)');
+console.log('- public/index.html (フロントエンド)');
+console.log('- .env (環境変数設定)');
+console.log('- package.json (依存関係)');
+console.log('- その他のデプロイ用設定ファイル');
+console.log('');
+console.log('🔒 主なセキュリティ機能:');
+console.log('- APIキーの完全隠蔽');
+console.log('- レート制限・入力検証');
+console.log('- セキュリティヘッダー');
+console.log('- HTTPS対応');
+console.log('');
+console.log('🚀 デプロイ方法: ./deploy.sh 実行で簡単デプロイ！');
