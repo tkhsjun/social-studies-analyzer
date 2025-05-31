@@ -1,0 +1,9 @@
+{
+  "name": "social-studies-analyzer",
+  "version": "1.0.0",
+  "description": "Social Studies Report Analyzer",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'No build step required'"
+  }
+}
